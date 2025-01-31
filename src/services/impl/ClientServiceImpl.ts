@@ -90,9 +90,6 @@ export class ClientServiceImpl implements ClientService{
 
 
     public register = async (details:any) => {
-
-       
-
         const { username,password,phone_number } = details;
 
         if (!username || !password || !phone_number){
@@ -129,13 +126,10 @@ export class ClientServiceImpl implements ClientService{
                 password: hashedPassword,
                 phone_number: phone_number,
                 role: 'Client'
-            },{
-                transaction: transaction
             });
 
             console.log("This is user",user)
             
-
             let authDetailsDTO = await this.generateTokens(
                 new ClientDTO(
                     user.dataValues.id,
@@ -152,15 +146,10 @@ export class ClientServiceImpl implements ClientService{
             await this.saveRefreshToken(authDetailsDTO, transaction)
 
             console.log("sucessfully registered")
-
             return authDetailsDTO
 
 
         });
-
-       
-
-        
 
     }
 

@@ -70,9 +70,12 @@ app.all('*',(
       ));
 })
 
-sequelize.sync({force: true})  
+sequelize.sync({force: false, alter: true})  // or just sequelize.sync()
     .then(() => {
         console.log('Database synchronized');
+    })
+    .catch((error) => {
+        console.error('Error synchronizing database:', error);
     });
 
 //set global error handler middleware
