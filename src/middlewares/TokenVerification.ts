@@ -2,9 +2,8 @@ import express from "express";
 import {AppError} from "../utils/AppError";
 import {StatusCodes} from "../utils/StatusCodes";
 import jwt from 'jsonwebtoken';
-// import redisClient from "../redis/RadisConnection";
 
-export const verifyOUToken = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
+export const verifyToken = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
 
     try {
         if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {

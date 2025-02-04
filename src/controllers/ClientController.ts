@@ -103,3 +103,35 @@ export const sendSMS = (
         })
 }
 
+export const logout = (
+    req:express.Request,
+    res:express.Response,
+    next:express.NextFunction
+) => {
+    const {id} = req.query as any
+
+    clientService.logout(id)
+        .then(response => {
+            res.status(200).send(new CustomResponse(StatusCodes.SUCCESS,"Logout successful",response))
+        })
+        .catch(error => {
+            next(error)
+        })
+}
+
+export const deleteClient = (
+    req:express.Request,
+    res:express.Response,
+    next:express.NextFunction
+) => {
+    const {id} = req.query as any
+
+    clientService.deleteClient(id)
+        .then(response => {
+            res.status(200).send(new CustomResponse(StatusCodes.SUCCESS, "Client deleted successfully", response))
+        })
+        .catch(error => {
+            next(error)
+        })
+}
+

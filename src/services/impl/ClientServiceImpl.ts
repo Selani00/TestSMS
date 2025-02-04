@@ -63,9 +63,17 @@ export class ClientServiceImpl implements ClientService{
         let clientDTO = new ClientDTO(
             client.dataValues.id,
             client.dataValues.username,
+            client.dataValues.name,
             client.dataValues.password,
             client.dataValues.role,
-            client.dataValues.phone_number
+            client.dataValues.phone_number,
+            client.dataValues.nic,
+            client.dataValues.accout_status,
+            client.dataValues.address,
+            client.dataValues.br_number,
+            client.dataValues.br_doc_img_path_1,
+            client.dataValues.br_doc_img_path_2
+            ,client.dataValues.status
         );
 
         let authDetailsDTO = await this.generateTokens(clientDTO);
@@ -90,9 +98,10 @@ export class ClientServiceImpl implements ClientService{
 
 
     public register = async (details:any) => {
-        const { username,password,phone_number } = details;
 
-        if (!username || !password || !phone_number){
+        const { username,password,name,phone_number,nic,accout_status, address, br_number, br_doc_img_path_1, br_doc_img_path_2} = details;
+
+        if (!username || !password || !name || !phone_number || !nic){
             throw new AppError(
                 'Some data are missing! Please check and try again',
                 400,
@@ -123,9 +132,17 @@ export class ClientServiceImpl implements ClientService{
             // save the user
             const user = await ClientModel.create({
                 username: username,
+                name: name,
                 password: hashedPassword,
                 phone_number: phone_number,
-                role: 'Client'
+                role: 'Client',
+                nic: nic,
+                accout_status: accout_status,
+                address: address,
+                br_number: br_number,
+                br_doc_img_path_1: br_doc_img_path_1,
+                br_doc_img_path_2: br_doc_img_path_2,
+                status: 'Active'
             });
 
             console.log("This is user",user)
@@ -134,9 +151,17 @@ export class ClientServiceImpl implements ClientService{
                 new ClientDTO(
                     user.dataValues.id,
                     user.dataValues.username,
+                    user.dataValues.name,
                     user.dataValues.password,
                     user.dataValues.role,
-                    user.dataValues.phone_number
+                    user.dataValues.phone_number,
+                    user.dataValues.nic,
+                    user.dataValues.accout_status,
+                    user.dataValues.address,
+                    user.dataValues.br_number,
+                    user.dataValues.br_doc_img_path_1,
+                    user.dataValues.br_doc_img_path_2,
+                    user.dataValues.status
                 )
             );
 
@@ -226,6 +251,51 @@ export class ClientServiceImpl implements ClientService{
 
 
         return "SMS sent successfully"
+
+    }
+
+    public logout = async (id:number) => {
+
+        const response = await RefreshTokenModel.destroy({
+            where: {
+                user_id: id
+            }
+        })
+
+        if (response === 0){
+            throw new AppError(
+                'Logout failed',
+                400,
+                StatusCodes.UNHANDLED_ERROR
+            )
+        }
+
+        return "Logout successful"
+
+    }
+
+    public deleteClient = async (id:number) => {
+
+        // find if client exists
+        const client = await ClientModel.findOne({
+            where: {
+                id: id
+            }
+        })
+
+        if (!client){
+            throw new AppError(
+                'Client not found',
+                404,
+                StatusCodes.DATA_NOT_FOUND
+            )
+        }
+
+        // if client exists change status to inactive in the client table
+        client.update({
+            status: 'Inactive'
+        })
+        
 
     }
 

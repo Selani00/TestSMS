@@ -1,5 +1,5 @@
 import express from "express";
-import * as OUTVerify from '../middlewares/OUTVerify'
+import * as VerifyToken from '../middlewares/TokenVerification'
 import * as ClientController from "../controllers/ClientController";
 
 
@@ -9,9 +9,12 @@ router.post('/register',  ClientController.register)
 
 router.post('/login',  ClientController.login)
 
-router.get('/wallet',OUTVerify.verifyOUToken,ClientController.getWallet)
+router.get('/wallet', VerifyToken.verifyToken,ClientController.getWallet)
 
-router.post('/sms-send',OUTVerify.verifyOUToken,ClientController.sendSMS)
+router.post('/sms-send',VerifyToken.verifyToken,ClientController.sendSMS)
 
+router.get('/logout',VerifyToken.verifyToken,ClientController.logout)
+
+router.delete('/delete', VerifyToken.verifyToken, ClientController.deleteClient)
 
 export default router;
