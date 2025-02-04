@@ -13,9 +13,7 @@ import { ClientDTO } from "../../dtos/ClientDTO";
 import {AuthDetailsDTO} from "../../dtos/AuthDetailsDTO";
 import WalletModel from "../../models/walletModel";
 
-// import {UserBehaviourServiceImpl} from "./UserBehaviourServiceImpl";
-// import {QAForm1ServiceImpl} from "./QAForm1ServiceImpl";
-import * as LogService from '../../utils/LogService'
+import * as  Logs from '../../utils/LogService'
 
 export class ClientServiceImpl implements ClientService{
 
@@ -77,6 +75,14 @@ export class ClientServiceImpl implements ClientService{
         );
 
         let authDetailsDTO = await this.generateTokens(clientDTO);
+
+        // save logs
+        await Logs.addLogs(
+            new Date().toISOString(), 
+            // create content with username that this user os login
+            "User with username " + username + " is logged in", 
+            "Login"
+        )
 
         return authDetailsDTO
 
@@ -170,6 +176,14 @@ export class ClientServiceImpl implements ClientService{
             //save refresh token in db
             await this.saveRefreshToken(authDetailsDTO, transaction)
 
+            // save logs
+            await Logs.addLogs(
+                new Date().toISOString(), 
+                // create content with username that this user os login
+                "User with username " + username + " is registered", 
+                "Register"
+            )
+
             console.log("sucessfully registered")
             return authDetailsDTO
 
@@ -210,6 +224,14 @@ export class ClientServiceImpl implements ClientService{
             }
         })
 
+        // save logs
+        await Logs.addLogs(
+            new Date().toISOString(),
+            // create content with username that this user os login
+            "User with id " + id + " is get wallet",
+            "Get Wallet"
+        )
+
         // return both client and wallet
         return {
             client: client,
@@ -248,7 +270,13 @@ export class ClientServiceImpl implements ClientService{
             wallet.increment('count', { by: 1 });
         }
         
-
+        // save logs
+        await Logs.addLogs(
+            new Date().toISOString(),
+            // create content with username that this user os login
+            "User with id " + user_id + " is send SMS",
+            "Send SMS"
+        )
 
         return "SMS sent successfully"
 
@@ -270,6 +298,13 @@ export class ClientServiceImpl implements ClientService{
             )
         }
 
+        // save logs
+        await Logs.addLogs(
+            new Date().toISOString(),
+            "User with id " + id + " is logout",
+            "Logout"
+        )
+
         return "Logout successful"
 
     }
@@ -290,6 +325,13 @@ export class ClientServiceImpl implements ClientService{
                 StatusCodes.DATA_NOT_FOUND
             )
         }
+
+        // save logs
+        await Logs.addLogs(
+            new Date().toISOString(),
+            "User with id " + id + " is deleted",
+            "Delete"
+        )
 
         // if client exists change status to inactive in the client table
         client.update({

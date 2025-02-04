@@ -4,7 +4,6 @@ import process from "process";
 import {AppError} from "../utils/AppError";
 import {StatusCodes} from "../utils/StatusCodes";
 import * as LogService from '../utils/LogService'
-import {LogLevel, LogMicroService} from '../utils/LogService'
 
 export const exceptionHandler = async (error:any,req:express.Request,res:express.Response,next:express.NextFunction) => {
     console.log('🔥🔥🔥🔥🔥🔥🔥🔥🔥');
@@ -12,8 +11,6 @@ export const exceptionHandler = async (error:any,req:express.Request,res:express
     error.statusCode = error.statusCode || 500;
     error.status = error.status || 'error'
 
-    //send details about error to Log service
-    await addErrorLog(error)
 
     if (process.env.NODE_ENV === 'production'){
 
@@ -31,13 +28,6 @@ export const exceptionHandler = async (error:any,req:express.Request,res:express
     }
 }
 
-const addErrorLog = async (error:any) => {
-
-    console.log(error.message)
-
-    // await LogService.addErrorLog(LogLevel.INFO, LogMicroService.BACK_AUTH_SERVICE, error.message)
-
-}
 
 const sendErrorToDev = (error:any,res:express.Response) => {
     //send error to a developer with more details
