@@ -4,7 +4,7 @@ import {Transaction} from "sequelize";
 import process from "process";
 import * as TokenGenerator from "../../utils/TokenGenerator";
 import RefreshTokenModel from "../../models/RefreshTokenModel";
-import {ClientService} from "../ClientService";
+import {ClientService} from "../AccountService";
 import sequelize from "../../db/DbConnection";
 import bcrypt from "bcryptjs";
 import ClientModel from "../../models/ClientModel";
@@ -208,38 +208,6 @@ export class ClientServiceImpl implements ClientService{
         });
     }
 
-    public getWallet = async (id:number) => {
-
-        console.log("This is id",id)
-
-        const client = await ClientModel.findOne({
-            where: {
-                id: id
-            }
-        })
-        
-        const wallet = await WalletModel.findOne({
-            where: {
-                client_id: id
-            }
-        })
-
-        // save logs
-        await Logs.addLogs(
-            new Date().toISOString(),
-            // create content with username that this user os login
-            "User with id " + id + " is get wallet",
-            "Get Wallet"
-        )
-
-        // return both client and wallet
-        return {
-            client: client,
-            wallet: wallet
-        }
-
-
-    }
 
     public sendSMS = async (details:any) => {
         
@@ -263,11 +231,11 @@ export class ClientServiceImpl implements ClientService{
         if (!wallet){
             // if wallet is not found, create a new wallet
             await WalletModel.create({
-                count: 1,
+                current_value: 1,
                 client_id: user_id
             })
         }else {
-            wallet.increment('count', { by: 1 });
+            wallet.increment('current_value', { by: 1 });
         }
         
         // save logs

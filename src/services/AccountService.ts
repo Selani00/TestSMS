@@ -4,7 +4,9 @@ export interface ClientService{
 
     register(details:any):Promise<any>;
 
-    getWallet(id:number):Promise<any>;
+    logout(details:any):Promise<any>;
+
+    deleteClient(details:any):Promise<any>;
 
     sendSMS(details:any):Promise<any>;
 

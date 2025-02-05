@@ -4,7 +4,7 @@ import ClientModel from './ClientModel';
 
 export interface WalletAttributes {
     id: number;
-    count: number;
+    current_value: number;
     client_id: number;
 }
 
@@ -21,7 +21,7 @@ const WalletModel = sequelize.define<Model<WalletAttributes, WalletCreationAttri
             allowNull: false
 
         },
-        count: {
+        current_value: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,

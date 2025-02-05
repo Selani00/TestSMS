@@ -11,11 +11,11 @@ import {StatusCodes} from "./utils/StatusCodes";
 import * as GlobalErrorHandler from "./exception/ExceptionHandler"
 import {CustomResponse} from "./utils/CustomResponse";
 import sequelize from "./db/DbConnection";
-// import {UserType} from "./models/UserModel";
-import ClientRoutes from "./routes/ClientRoutes";
-
-// import VerifyRoutes from "./routes/VerifyRoutes";
-// import {UserServiceImpl} from "./services/impl/UserServiceImpl";
+import ClientRoutes from "./routes/AccountRoutes";
+import LogsRoutes from "./routes/LogsRoutes";
+import PaymentRoutes from "./routes/PaymentRoutes";
+import BillRoutes from "./routes/BillRoutes";
+import WalletRoutes from "./routes/WalletRoutes";
 
 const app = express();
 
@@ -33,8 +33,11 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 
-app.use('/api/client', ClientRoutes)
-
+app.use('/account', ClientRoutes)
+app.use('/logs', LogsRoutes)
+app.use('/payment', PaymentRoutes)
+app.use('/bill', BillRoutes)
+app.use('/wallet', WalletRoutes)
 
 app.get('/health',
     (
@@ -50,9 +53,6 @@ app.get('/health',
         )
     }
 )
-
-
-
 
 
 // this should always be the end of the routs
