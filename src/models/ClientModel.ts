@@ -91,7 +91,7 @@ const ClientModel = sequelize.define<Model<ClientAttributes, ClientCreationAttri
         }
         
     },{
-        tableName:'client',
+        tableName:'customers',
         timestamps: true
     }
 );

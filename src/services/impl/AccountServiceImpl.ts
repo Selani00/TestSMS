@@ -48,57 +48,87 @@ export class ClientServiceImpl implements ClientService{
             )
         }
 
-        let isMatch =  await bcrypt.compare(password, client.dataValues.password);
+        return await sequelize.transaction(async (transaction) => {
+            let isMatch =  await bcrypt.compare(password, client.dataValues.password);
 
-        if (!isMatch){
-            throw new AppError(
-                'Invalid username or password!',
-                401,
-                StatusCodes.INVALID_USERNAME_OR_PASSWORD
+            if (!isMatch){
+                throw new AppError(
+                    'Invalid username or password!',
+                    401,
+                    StatusCodes.INVALID_USERNAME_OR_PASSWORD
+                )
+            }
+
+            // check is the status is active
+            if (client.dataValues.status === 'Inactive'){
+                    throw new AppError(
+                        'User deleted this account',
+                        401,
+                        StatusCodes.INVALID_USERNAME_OR_PASSWORD
+                )
+            }
+
+            let clientDTO = new ClientDTO(
+                client.dataValues.id,
+                client.dataValues.username,
+                client.dataValues.name,
+                client.dataValues.password,
+                client.dataValues.role,
+                client.dataValues.phone_number,
+                client.dataValues.nic,
+                client.dataValues.accout_status,
+                client.dataValues.address,
+                client.dataValues.br_number,
+                client.dataValues.br_doc_img_path_1,
+                client.dataValues.br_doc_img_path_2
+                ,client.dataValues.status
+            );
+
+            let authDetailsDTO = await this.generateTokens(clientDTO);
+
+            // save logs
+            await Logs.addLogs(
+                new Date().toISOString(), 
+                // create content with username that this user os login
+                "User with username " + username + " is logged in", 
+                "Login"
             )
-        }
 
-        let clientDTO = new ClientDTO(
-            client.dataValues.id,
-            client.dataValues.username,
-            client.dataValues.name,
-            client.dataValues.password,
-            client.dataValues.role,
-            client.dataValues.phone_number,
-            client.dataValues.nic,
-            client.dataValues.accout_status,
-            client.dataValues.address,
-            client.dataValues.br_number,
-            client.dataValues.br_doc_img_path_1,
-            client.dataValues.br_doc_img_path_2
-            ,client.dataValues.status
-        );
+            // save refresh token
+            await this.saveRefreshToken(authDetailsDTO,transaction);
 
-        let authDetailsDTO = await this.generateTokens(clientDTO);
+            return authDetailsDTO
 
-        // save logs
-        await Logs.addLogs(
-            new Date().toISOString(), 
-            // create content with username that this user os login
-            "User with username " + username + " is logged in", 
-            "Login"
-        )
+        });
 
-        return authDetailsDTO
+        
 
     }
 
     generateTokens = async (dto:ClientDTO ) => {
 
-
         let payloadDTO = new PayloadDTO(dto.toJSON());
-
         let accessToken = await TokenGenerator.generateAccessToken(payloadDTO);
-
         let refreshTokenToken = await TokenGenerator.generateRefreshToken(payloadDTO);
 
         return new AuthDetailsDTO(payloadDTO.toJSON(),accessToken,refreshTokenToken)
 
+    }
+
+    saveRefreshToken = async (dto:AuthDetailsDTO, transaction?:Transaction) => {
+        const expDate = new Date();
+        expDate.setDate(expDate.getDate() + parseInt(process.env.REF_EXP_TIME_IN_DAYS || '7'));
+
+        console.log("This is user id",dto.payload.user.id)
+
+
+        await RefreshTokenModel.create({
+            token: dto.refreshToken,
+            exp_time: expDate,
+            user_id: dto.payload.user.id
+        }, {
+            transaction: transaction
+        });
     }
 
 
@@ -115,7 +145,7 @@ export class ClientServiceImpl implements ClientService{
             )
         }
 
-        return await sequelize.transaction(async (transaction) => {
+        
 
             // check whether the user is already registered
             const client = await ClientModel.findOne({
@@ -151,30 +181,6 @@ export class ClientServiceImpl implements ClientService{
                 status: 'Active'
             });
 
-            console.log("This is user",user)
-            
-            let authDetailsDTO = await this.generateTokens(
-                new ClientDTO(
-                    user.dataValues.id,
-                    user.dataValues.username,
-                    user.dataValues.name,
-                    user.dataValues.password,
-                    user.dataValues.role,
-                    user.dataValues.phone_number,
-                    user.dataValues.nic,
-                    user.dataValues.accout_status,
-                    user.dataValues.address,
-                    user.dataValues.br_number,
-                    user.dataValues.br_doc_img_path_1,
-                    user.dataValues.br_doc_img_path_2,
-                    user.dataValues.status
-                )
-            );
-
-            console.log("This is auth details",authDetailsDTO)
-
-            //save refresh token in db
-            await this.saveRefreshToken(authDetailsDTO, transaction)
 
             // save logs
             await Logs.addLogs(
@@ -185,29 +191,9 @@ export class ClientServiceImpl implements ClientService{
             )
 
             console.log("sucessfully registered")
-            return authDetailsDTO
-
-
-        });
+            return user
 
     }
-
-    saveRefreshToken = async (dto:AuthDetailsDTO, transaction?:Transaction) => {
-        const expDate = new Date();
-        expDate.setDate(expDate.getDate() + parseInt(process.env.REF_EXP_TIME_IN_DAYS || '7'));
-
-        console.log("This is user id",dto.payload.user.id)
-
-
-        await RefreshTokenModel.create({
-            token: dto.refreshToken,
-            exp_time: expDate,
-            user_id: dto.payload.user.id
-        }, {
-            transaction: transaction
-        });
-    }
-
 
     public sendSMS = async (details:any) => {
         
@@ -306,7 +292,6 @@ export class ClientServiceImpl implements ClientService{
             status: 'Inactive'
         })
         
-
     }
 
 

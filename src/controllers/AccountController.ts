@@ -71,21 +71,6 @@ export const register = (
 }
 
 
-export const getWallet = (
-    req:express.Request,
-    res:express.Response,
-    next:express.NextFunction
-) => {
-    const {id} = req.query as any
-
-    clientService.getWallet(id)
-        .then(response => {
-            res.status(200).send(new CustomResponse(StatusCodes.SUCCESS,"Wallet fetched successfully",response))
-        })
-        .catch(error => {
-            next(error)
-        })
-}
 
 export const sendSMS = (
     req:express.Request,
@@ -112,7 +97,11 @@ export const logout = (
 
     clientService.logout(id)
         .then(response => {
-            res.status(200).send(new CustomResponse(StatusCodes.SUCCESS,"Logout successful",response))
+            res.status(200).send(
+                    new CustomResponse(StatusCodes.SUCCESS,
+                    "Logout successful"
+                )
+            )
         })
         .catch(error => {
             next(error)
@@ -128,7 +117,11 @@ export const deleteClient = (
 
     clientService.deleteClient(id)
         .then(response => {
-            res.status(200).send(new CustomResponse(StatusCodes.SUCCESS, "Client deleted successfully", response))
+            res.status(200).send(
+                new CustomResponse(StatusCodes.SUCCESS, 
+                    "Client deleted successfully"
+                )
+            )
         })
         .catch(error => {
             next(error)

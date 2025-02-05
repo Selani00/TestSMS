@@ -1,15 +1,12 @@
 import {LogsService} from "../LogsService";
 import LogsModel from "../../models/LogsModel";
-
 import * as  Logs from '../../utils/LogService'
 
 
 export class LogsServiceImpl implements LogsService{
 
-
     constructor() {
     }
-
 
     public getLogs = async () => {
 
@@ -22,14 +19,12 @@ export class LogsServiceImpl implements LogsService{
         await Logs.addLogs(
             new Date().toISOString(),
             // create content with username that this user os login
-            "User with id " + " is get wallet",
-            "Get Wallet"
+            "User is get logs",
+            "Get Logs"
         )
 
         // return both client and wallet
         return logs 
-
-
     }
 
 }
