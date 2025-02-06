@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../db/DbConnection';
-import ClientModel from './ClientModel';
+import sequelize from '../../db/DbConnection';
+import ClientModel from '../CustomersModel';
 
 export interface WalletAttributes {
     id: number;

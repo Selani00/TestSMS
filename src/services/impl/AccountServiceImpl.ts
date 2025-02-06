@@ -7,11 +7,11 @@ import RefreshTokenModel from "../../models/RefreshTokenModel";
 import {ClientService} from "../AccountService";
 import sequelize from "../../db/DbConnection";
 import bcrypt from "bcryptjs";
-import ClientModel from "../../models/ClientModel";
+import ClientModel from "../../models/CustomersModel";
 import {PayloadDTO} from "../../dtos/PayloadDTO";
 import { ClientDTO } from "../../dtos/ClientDTO";
 import {AuthDetailsDTO} from "../../dtos/AuthDetailsDTO";
-import WalletModel from "../../models/walletModel";
+import WalletModel from "../../models/wallet/walletModel";
 
 import * as  Logs from '../../utils/LogService'
 

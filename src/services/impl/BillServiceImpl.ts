@@ -1,5 +1,5 @@
 import {BillService} from "../BillService";
-import ClientModel from "../../models/ClientModel";
+import ClientModel from "../../models/CustomersModel";
 import BillModel from "../../models/BillModel";
 
 import * as  Logs from '../../utils/LogService'
@@ -16,7 +16,7 @@ export class BillServiceImpl implements BillService{
 
         const client = await BillModel.findOne({
             where: {
-                client_id: id
+                customer_id: id
             }
         })
         

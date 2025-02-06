@@ -2,23 +2,24 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../db/DbConnection';
 import CustomersModel from './CustomersModel';
 
-export interface BillsAttributes {
+export interface PaymentsAttributes {
     id: number;
     customer_id : number;
-    pay_value: number;
-    reason: string;
-    billed_date: string;
-    content : string;
-    ispaid : boolean;
-    final_date : string;
-    interest : number;
+    type: string;
+    paid_value: string;
+    if_pay_slip_img_path : string;
+    admin_reviewed_datetime : string;
+    payment_receipt_img_path : string;
+    isapproved : boolean;
+    customer_note : string;
+    admin_note : string;
 }
 
 
-export interface BillsCreationAttributes extends Optional<BillsAttributes, 'id'> {}
+export interface PaymentsCreationAttributes extends Optional<PaymentsAttributes, 'id'> {}
 
-const BillModel = sequelize.define<Model<BillsAttributes, BillsCreationAttributes>>(
-    'bills',
+const PaymentsModel = sequelize.define<Model<PaymentsAttributes, PaymentsCreationAttributes>>(
+    'payments',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -32,47 +33,55 @@ const BillModel = sequelize.define<Model<BillsAttributes, BillsCreationAttribute
             allowNull: false,
             unique: true,
         },
-        pay_value: {
+        type: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        reason: {
+        paid_value: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        billed_date: {
+        if_pay_slip_img_path : {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        content : {
+        admin_reviewed_datetime : {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        ispaid : {
+        payment_receipt_img_path : {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: false,
+        },
+        isapproved : {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        final_date : {
+        customer_note : {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: false,
         },
-        interest : {
+        admin_note : {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: false,
         }
+        
 
     },{
-        tableName:'bills',
-        timestamps: true
+        tableName:'payments',
+        timestamps: false
     }
 );
 
 // make relations
-CustomersModel.hasMany(BillModel, {
+CustomersModel.hasMany(PaymentsModel, {
     foreignKey: {
         name: 'customer_id',
         allowNull: false
@@ -81,7 +90,7 @@ CustomersModel.hasMany(BillModel, {
     onUpdate:"CASCADE",
 })
 
-BillModel.belongsTo(CustomersModel, { foreignKey: 'customer_id' });
+PaymentsModel.belongsTo(CustomersModel, { foreignKey: 'customer_id' });
 
 
-export default BillModel;
+export default PaymentsModel;

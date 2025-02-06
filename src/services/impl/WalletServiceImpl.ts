@@ -1,6 +1,6 @@
 import {WalletService} from "../WalletService";
-import ClientModel from "../../models/ClientModel";
-import WalletModel from "../../models/walletModel";
+import ClientModel from "../../models/CustomersModel";
+import WalletModel from "../../models/wallet/walletModel";
 
 import * as  Logs from '../../utils/LogService'
 
