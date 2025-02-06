@@ -13,7 +13,7 @@ export interface SMSServiceAttributes {
 export interface SMSServiceCreationAttributes extends Optional<SMSServiceAttributes, 'id'> {}
 
 const SMSServiceModel = sequelize.define<Model<SMSServiceAttributes, SMSServiceCreationAttributes>>(
-    'sms_service',
+    'SMSService',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -39,14 +39,11 @@ const SMSServiceModel = sequelize.define<Model<SMSServiceAttributes, SMSServiceC
         }
     },{
         tableName:'sms_service',
-        timestamps: true
+        timestamps: false
     }
 );
 
 // make relations
-
-
-
 
 SMSServiceModel.belongsTo(CustomerModel, { foreignKey: 'customer_id' });
 

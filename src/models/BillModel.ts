@@ -18,7 +18,7 @@ export interface BillsAttributes {
 export interface BillsCreationAttributes extends Optional<BillsAttributes, 'id'> {}
 
 const BillModel = sequelize.define<Model<BillsAttributes, BillsCreationAttributes>>(
-    'bills',
+    'Bills',
     {
         id: {
             type: DataTypes.INTEGER,

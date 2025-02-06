@@ -11,7 +11,7 @@ export interface RefreshTokenAttributes {
 export interface RefreshTokenCreationAttributes extends Optional<RefreshTokenAttributes, 'id'> {}
 
 const RefreshTokenModel = sequelize.define<Model<RefreshTokenAttributes, RefreshTokenCreationAttributes>>(
-    'Refresh_token',
+    'RefreshToken',
     {
         id: {
             type: DataTypes.INTEGER,

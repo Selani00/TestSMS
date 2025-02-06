@@ -1,22 +1,24 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../../db/DbConnection';
 import SMSServiceModel from './SMSServiceModel';
+import SMSMasksModel from './SMSMasks';
 
-export interface SMSMasksAttributes {
+export interface SMSAttributes {
     id: number;
     sms_service_id: number;
-    mask_status: string;
-    name : string;
-    admin_note : string;
-    customer_note : string;
-    created_date_time : string;
+    sms_masks_id : number;
+    is_diliverd: boolean;
+    sms_content : string;
+    phone_number : string;
+    finished_date_time : string;
+    started_date_time : string;
 }
 
 
-export interface SMSMasksCreationAttributes extends Optional<SMSMasksAttributes, 'id'> {}
+export interface SMSCreationAttributes extends Optional<SMSAttributes, 'id'> {}
 
-const SMSMasksModel = sequelize.define<Model<SMSMasksAttributes, SMSMasksCreationAttributes>>(
-    'SMSMasks',
+const SMSModel = sequelize.define<Model<SMSAttributes, SMSCreationAttributes>>(
+    'SMS',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -30,39 +32,43 @@ const SMSMasksModel = sequelize.define<Model<SMSMasksAttributes, SMSMasksCreatio
             allowNull: false,
             unique: false,
         },
-        mask_status: {
+        sms_masks_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true,
+        },
+        is_diliverd: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        sms_content : {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        name: {
+        phone_number : {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        admin_note: {
+        finished_date_time : {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        customer_note: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: false,
-        },
-        created_date_time : {
+        started_date_time : {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         }
     },{
-        tableName:'sms_masks',
+        tableName:'sms',
         timestamps: false
     }
 );
 
 // make relations
-SMSServiceModel.hasMany(SMSMasksModel, {
+SMSServiceModel.hasMany(SMSModel, {
     foreignKey: {
         name: 'sms_service_id',
         allowNull: false
@@ -71,6 +77,9 @@ SMSServiceModel.hasMany(SMSMasksModel, {
     onUpdate:"CASCADE",
 }) 
 
-SMSMasksModel.belongsTo(SMSServiceModel, { foreignKey: 'sms_service_id' });
+SMSModel.belongsTo(SMSServiceModel, { foreignKey: 'sms_service_id' });
 
-export default SMSMasksModel;
+
+SMSMasksModel.belongsTo(SMSModel, { foreignKey: 'sms_masks_id' });
+
+export default SMSModel;

@@ -19,7 +19,7 @@ export interface PaymentsAttributes {
 export interface PaymentsCreationAttributes extends Optional<PaymentsAttributes, 'id'> {}
 
 const PaymentsModel = sequelize.define<Model<PaymentsAttributes, PaymentsCreationAttributes>>(
-    'payments',
+    'Payments',
     {
         id: {
             type: DataTypes.INTEGER,

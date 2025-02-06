@@ -1,22 +1,24 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../../db/DbConnection';
-import SMSServiceModel from './SMSServiceModel';
+import SMSServiceModel from '../sms/SMSServiceModel';
 
-export interface SMSMasksAttributes {
+
+export interface OrderedPackagesAttributes {
     id: number;
     sms_service_id: number;
-    mask_status: string;
-    name : string;
-    admin_note : string;
-    customer_note : string;
-    created_date_time : string;
+    ordered_date_time: string;
+    last_payment_date_time: string;
+    due_payment_date_time: string;
+    balance_sms_count: number;
+    payment_status: string;
+    is_intial_payment_paid: boolean;
 }
 
 
-export interface SMSMasksCreationAttributes extends Optional<SMSMasksAttributes, 'id'> {}
+export interface OrderedPackagesCreationAttributes extends Optional<OrderedPackagesAttributes, 'id'> {}
 
-const SMSMasksModel = sequelize.define<Model<SMSMasksAttributes, SMSMasksCreationAttributes>>(
-    'SMSMasks',
+const OrderPackagesModel = sequelize.define<Model<OrderedPackagesAttributes, OrderedPackagesCreationAttributes>>(
+    'OrderedPackages',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -30,39 +32,44 @@ const SMSMasksModel = sequelize.define<Model<SMSMasksAttributes, SMSMasksCreatio
             allowNull: false,
             unique: false,
         },
-        mask_status: {
+        ordered_date_time: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        name: {
+        last_payment_date_time: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        admin_note: {
+        due_payment_date_time: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        customer_note: {
+        balance_sms_count: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: false,
+        },
+        payment_status: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: false,
         },
-        created_date_time : {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: false,
+        is_intial_payment_paid: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
         }
+        
     },{
-        tableName:'sms_masks',
-        timestamps: false
+        tableName:'ordered_packages',
+        timestamps: true
     }
 );
 
 // make relations
-SMSServiceModel.hasMany(SMSMasksModel, {
+SMSServiceModel.hasMany(OrderPackagesModel, {
     foreignKey: {
         name: 'sms_service_id',
         allowNull: false
@@ -71,6 +78,9 @@ SMSServiceModel.hasMany(SMSMasksModel, {
     onUpdate:"CASCADE",
 }) 
 
-SMSMasksModel.belongsTo(SMSServiceModel, { foreignKey: 'sms_service_id' });
+OrderPackagesModel.belongsTo(SMSServiceModel, { foreignKey: 'sms_service_id' });
 
-export default SMSMasksModel;
+
+
+
+export default OrderPackagesModel;

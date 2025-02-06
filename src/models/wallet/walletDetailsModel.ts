@@ -12,7 +12,7 @@ export interface WalletDetailsAttributes {
 export interface WalletDetailsCreationAttributes extends Optional<WalletDetailsAttributes, 'id'> {}
 
 const WalletDetailsModel = sequelize.define<Model<WalletDetailsAttributes, WalletDetailsCreationAttributes>>(
-    'Wallet_details',
+    'WalletDetails',
     {
         id: {
             type: DataTypes.INTEGER,
