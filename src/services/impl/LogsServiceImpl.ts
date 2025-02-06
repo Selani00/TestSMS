@@ -1,6 +1,7 @@
 import {LogsService} from "../LogsService";
 import LogsModel from "../../models/LogsModel";
 import * as  Logs from '../../utils/LogService'
+import SMSServiceModel from "../../models/sms/SMSServiceModel";
 
 
 export class LogsServiceImpl implements LogsService{

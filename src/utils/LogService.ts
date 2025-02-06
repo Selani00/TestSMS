@@ -1,8 +1,5 @@
 import LogsModel from "../models/LogsModel"
 
-
-
-
 export const addLogs = async (date_time: string, content : string , reason: string) => {
 
     if (!date_time || !content || !reason){
